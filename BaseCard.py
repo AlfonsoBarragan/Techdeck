@@ -37,6 +37,8 @@ list_variables          = ['victory', 'position', 'None']
 test_title              = "IF"
 test_desc               = "if(pos%2 == 0){"
 
+card_size               = (659, 899)
+
 test_coord_title        = (290, 170)
 test_coord_desc         = (80, 340)
 test_desc_tab           = (40, 40)

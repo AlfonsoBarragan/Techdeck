@@ -12,6 +12,9 @@ import utils
 import random
 import os
 
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPDF
+
 
 def create_deck(deck_name, n_cards, base_card, test_title, test_desc,
                 base_card_end, list_kind_algorithm, list_logic_operations,
@@ -476,19 +479,63 @@ def remove_list_of_cards(list_of_cards, deck_folder, deck_name):
         os.system('rm {}/{}/{}'.format(deck_folder, deck_name, card))
         utils.printProgressBar(list_of_cards.index(card), len(list_of_cards))
 
+def generate_card_to_print(output_route, input_route, card_width, card_height, list_of_cards, end_svg_file):
+    number_of_cards = len(list_of_cards)
+    number_of_folds = int(number_of_cards / 9) + 1
+    index = 0
+    
+    for fold in range(number_of_folds):
+        file_to_print = open("{}/fold_to_print_{}.svg".format(output_route, fold), "w")
+        string_cards = ""
+        
+        card_offset_x   = 30
+        card_offset_y  = 50
+        
+        cards_to_add = list_of_cards[index:index+9]
+        
+        for card in cards_to_add:
+            card_route = "{}/{}".format(input_route, card)
+            
+            if cards_to_add.index(card) % 3 == 0 and cards_to_add.index(card) != 0:
+                card_offset_y += card_height + 50
+                card_offset_x = 30
+
+                
+            string_cards += '<image x="{}" y="{}" width="{}" height="{}" xlink:href="{}" />\n'.format(card_offset_x, card_offset_y,
+                                                                                                      card_width, card_height, 
+                                                                                                      card_route)
+            card_offset_x += card_width + 30
+
+            
+            
+        file_to_print.write('<svg width="2100" height="2970">\n {}\n{}\n'.format(string_cards, end_svg_file))
+        
+        index += 9
+        file_to_print.close()
+        
+def converse_to_pdf(route_input_folds, route_output_folds):
+    
+    list_of_folds = utils.ls(route_input_folds)
+    
+    for fold in list_of_folds:
+        os.system("rsvg-convert -f pdf -o {}/{}.pdf {}/{}".format(route_output_folds, fold[:len(fold)-4], route_input_folds, fold))
 
 if __name__ == '__main__':
-    create_deck("Variables_Operaciones", 1000, bc.base_card, 
-                bc.test_title, bc.test_desc,
-                bc.base_card_end, bc.list_kind_algorithm, bc.list_logic_operations,
-                bc.list_variables, bc.list_condition_linkers, bc.list_arit_monators,
-                bc.list_kind_operations, bc.list_arit_operations, bc.list_parenthesis,
-                bc.test_coord_title, bc.test_coord_desc)
+    # create_deck("Variables_Operaciones", 1000, bc.base_card, 
+    #             bc.test_title, bc.test_desc,
+    #             bc.base_card_end, bc.list_kind_algorithm, bc.list_logic_operations,
+    #             bc.list_variables, bc.list_condition_linkers, bc.list_arit_monators,
+    #             bc.list_kind_operations, bc.list_arit_operations, bc.list_parenthesis,
+    #             bc.test_coord_title, bc.test_coord_desc)
     
-    list_of_cards = filter_deck(routes.deck_folder, "Variables_Operaciones", bc.init_high_text, 
-                                bc.max_high_text, bc.max_lenght_text, bc.increment_y_axis)
+    # list_of_cards = filter_deck(routes.deck_folder, "Variables_Operaciones", bc.init_high_text, 
+    #                             bc.max_high_text, bc.max_lenght_text, bc.increment_y_axis)
     
-    remove_list_of_cards(list_of_cards, routes.deck_folder, "Variables_Operaciones")
+    # remove_list_of_cards(list_of_cards, routes.deck_folder, "Variables_Operaciones")
+    # generate_card_to_print("Decks/to_print", "Variables_Operaciones", bc.card_size[0],
+    #                        bc.card_size[1], utils.ls("Decks/Variables_Operaciones/"), bc.base_card_end)
+    
+    converse_to_pdf("Decks/to_print", "Decks/to_print_pdf")
     
     
     
