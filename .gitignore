@@ -126,7 +126,7 @@ venv.bak/
 dmypy.json
 
 # decks files
-Deck/
+Decks/
 
 # Pyre type checker
 .pyre/
