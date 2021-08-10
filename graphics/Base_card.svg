@@ -1,0 +1,44 @@
+<!-- Base card -->
+<svg width="660" height="900">
+    <!-- El rectangulo comienza en el (10,10) y tiene una medida de 508 x 889 
+         se pretende dejar una sangria de 63.5 para diseñar lo que es la carta
+         en si. Luego el texto habria que escribirlo en dentro del area: 518 + 63.5 x 899 + 63.5
+    -->
+    <defs>
+        <style type="text/css">
+	        .st1{   font-family:'Pixelmix'; 
+                    font-size:80px; 
+                    fill:rgb(0,0,0); }
+            
+            .st2{   font-family:'Pixelmix'; 
+                    font-size:40px; 
+                    fill:rgb(0,0,0); }
+        </style>
+        <style>
+            #cardContainer{
+                fill:rgb(120, 120, 0);
+                stroke:black;
+                stroke-width:30;
+                opacity:0.5;
+            }
+            
+            #textContainer{
+                fill:rgb(0, 0, 0);
+                opacity:0.5;
+            }
+        </style>
+    </defs>
+
+    <rect x="15" y="15" rx="20" ry="20" width="630" height="870" id="cardContainer"/>
+    <rect x="60" y="60" rx="30" ry="30" width="540" height="160" id="textContainer"/>
+    <text x="290" y="170" class="st1">IF</text>
+
+    <text x="80" y="340" class="st2">if(pos%2 == 0){
+        <tspan x="120" y="380" class="st2">n += 1;</tspan>
+        <tspan x="80" y="420" class="st2">}</tspan>
+    </text>
+    <rect x="60" y="280" rx="30" ry="30" width="540" height="530" id="textContainer"/>
+
+
+
+</svg>

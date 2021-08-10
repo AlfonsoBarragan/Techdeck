@@ -130,3 +130,6 @@ Decks/*
 
 # Pyre type checker
 .pyre/
+
+# Csv
+*.csv

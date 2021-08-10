@@ -1,0 +1,44 @@
+<!-- Base card -->
+<svg width="481" height="481">
+    <!-- El rectangulo comienza en el (10,10) y tiene una medida de 508 x 889 
+         se pretende dejar una sangria de 63.5 para diseñar lo que es la carta
+         en si. Luego el texto habria que escribirlo en dentro del area: 518 + 63.5 x 899 + 63.5
+    -->
+    <defs>
+        <style type="text/css">
+	        .st1{   font-family:'IBM Plex Mono'; 
+                    font-size:40px; 
+                    fill:rgb(0,0,0); }
+
+            .st2{   font-family:'IBM Plex Mono'; 
+                    font-size:20px; 
+                    fill:rgb(0,0,0); }
+            
+        </style>
+        
+        <style>
+            #cardContainer{
+                fill:rgb(120, 120, 0);
+                stroke:black;
+                stroke-width:30;
+                opacity:0.5;
+            }
+            
+            #textContainer{
+                fill:rgb(255, 255, 255);
+                opacity:1;
+            }
+        </style>
+    </defs>
+
+
+    <rect x="0" y="0" width="481" height="481" id="textContainer"/>
+    <text x="52" y="45" class="st1">if(pos%2 == 0){
+        <tspan x="52" y="85" class="st1">n += 1;</tspan>
+        <tspan x="52" y="125" class="st1">}</tspan>
+    </text>
+      <image xlink:href="./monito_logo.PNG" height="50" width="50" x="290" y="421"/>
+
+    <text x="350" y="461" class="st2">Les Monkes</text>
+
+</svg>

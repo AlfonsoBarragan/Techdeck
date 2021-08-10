@@ -1,131 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Feb  8 16:58:49 2020
 
-@author: alfonso
-"""
-
-import BaseCard as bc
-import routes
-import utils
-import random
 import os
+import random
+import routes
+import Galfgets
 
+from Cards import TechDeck_Card, TechDeck_Card_Elements, Against_Card
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPDF
 
+# TechDeck deck generation
 
-def create_deck(deck_name, n_cards, base_card, test_title, test_desc,
-                base_card_end, list_kind_algorithm, list_logic_operations,
-                list_variables, list_condition_linkers, list_arit_monators,
-                list_kind_operations, list_arit_operations, list_parenthesis,
-                test_coord_title, test_coord_desc):
-    
-    os.system('mkdir {}/{}'.format(routes.deck_folder, deck_name))
-    
-    for i in range(n_cards):
-        file_card = open("{}/{}/card_{}.svg".format(routes.deck_folder, deck_name, i), "w")
-        file_card.write(base_card)
-        
-        title, description = generate_card(list_kind_algorithm, list_logic_operations, 
-                                           list_variables, list_condition_linkers, 
-                                           list_arit_monators, list_kind_operations, 
-                                           list_arit_operations, list_parenthesis)
-        
-        title_coord = calculate_coord(title, test_title, test_coord_title)
-        desc_coord = test_coord_desc
-        
-        description_lines = description.split("\n")
-        
-        file_card.write('\t<text x="{}" y="{}" class="st1"> {} </text>\n'.format(title_coord[0], title_coord[1],
-                                                                            title))
-        file_card.write('\t<text x="{}" y="{}" class="st2"> {} \n'.format(desc_coord[0], desc_coord[1],
-                                                                       description_lines[0]))
-        offset_x = 0
-        offset_y = 20
-
-        if len(description_lines) > 2:
-    
-            for line in description_lines[1:]:
-            
-                if ('{' in list(description_lines[description_lines.index(line) - 1])) or (len(description_lines[description_lines.index(line) - 1].split("SEMICOLON")) > 1):
-                    offset_x += 30
-                elif ('}' in list(line)):
-                    offset_x -= 30
-            
-                
-                file_card.write('\t\t<tspan x="{}" y="{}" class="st2"> {} </tspan>\n'.format(desc_coord[0]+offset_x, 
-                                                                               desc_coord[1]+offset_y,
-                                                                               line.replace('SEMICOLON', ':')))
-                if ('break;' in line.split(" ")):
-                    offset_x -= 30
-                
-                offset_y += 20
-
-        
-        file_card.write("\t</text>\n")
-        
-        file_card.write(base_card_end)
-        file_card.close()
-        
-
-def calculate_coord(string_to_insert, test_string, test_coord):
-    caracteres_test = len(test_string)
-    caracteres      = len(string_to_insert)
-    
-    diff_letters    = caracteres - caracteres_test
-    
-    coord_x = test_coord[0] - diff_letters * 20
-    
-    return (coord_x, test_coord[1])
-
-    
-def generate_card(list_kind_algorithm, list_logic_operations, list_variables, list_condition_linkers, list_arit_monators, list_kind_operations, list_arit_operations, list_parenthesis):
-    algorithm           = random.choice(list_kind_algorithm)
-   
-    string_title        = ""
-    string_description  = ""
-    
-    if algorithm == 'if':
-        string_title += (algorithm)
-        string_description += generate_if_struct(list_logic_operations,
-                                                 list_variables, list_condition_linkers, list_arit_monators,
-                                                 list_kind_operations, list_arit_operations, list_parenthesis)
-        
-    
-    elif algorithm == 'else if':
-        string_title += ("if - " + algorithm)
-        
-        string_description += generate_if_else_if_struct(list_logic_operations,
-                                                         list_variables, list_condition_linkers, list_arit_monators,
-                                                         list_kind_operations, list_arit_operations, list_parenthesis)
-        
-    elif algorithm == 'else':
-        string_title += ("if - " + algorithm)
-        string_description += generate_if_else_struct(list_logic_operations,
-                                                      list_variables, list_condition_linkers, list_arit_monators,
-                                                      list_kind_operations, list_arit_operations, list_parenthesis)
-    elif algorithm == 'switch':
-        string_title += (algorithm)
-        string_description += generate_switch_case_struct(list_logic_operations,
-                                                          list_variables, list_condition_linkers, list_arit_monators,
-                                                          list_kind_operations, list_arit_operations, list_parenthesis)
-        
-    
-    elif algorithm == 'None':
-        string_title += ("Operation")
-        string_description += "{}".format(generate_operations(list_arit_monators, 
-                                                              list_variables, 
-                                                              list_kind_operations, 
-                                                              list_arit_operations, 
-                                                              list_parenthesis,
-                                                              list_logic_operations,
-                                                              list_condition_linkers))
-
-    return string_title, string_description
-
-def generate_if_struct(list_logic_operations,
+def _generate_if_struct(list_logic_operations,
                        list_variables, list_condition_linkers, list_arit_monators,
                        list_kind_operations, list_arit_operations, list_parenthesis):
     
@@ -142,7 +29,7 @@ def generate_if_struct(list_logic_operations,
 
     return string_description
 
-def generate_if_else_if_struct(list_logic_operations,
+def _generate_if_else_if_struct(list_logic_operations,
                             list_variables, list_condition_linkers, list_arit_monators,
                             list_kind_operations, list_arit_operations, list_parenthesis):
     
@@ -200,7 +87,7 @@ def generate_if_else_if_struct(list_logic_operations,
 
     return string_description
 
-def generate_if_else_struct(list_logic_operations,
+def _generate_if_else_struct(list_logic_operations,
                                list_variables, list_condition_linkers, list_arit_monators,
                                list_kind_operations, list_arit_operations, list_parenthesis):
     
@@ -224,7 +111,7 @@ def generate_if_else_struct(list_logic_operations,
 
     return string_description
 
-def generate_switch_case_struct(list_logic_operations,
+def _generate_switch_case_struct(list_logic_operations,
                                 list_variables, list_condition_linkers, list_arit_monators,
                                 list_kind_operations, list_arit_operations, list_parenthesis):
     
@@ -260,7 +147,7 @@ def generate_switch_case_struct(list_logic_operations,
     
     return string_switch
 
-def generate_case_estructure(case, kind_of_case, list_logic_operations,
+def _generate_case_estructure(case, kind_of_case, list_logic_operations,
                              list_variables, list_condition_linkers, list_arit_monators,
                              list_kind_operations, list_arit_operations, list_parenthesis):
     
@@ -291,7 +178,7 @@ def generate_case_estructure(case, kind_of_case, list_logic_operations,
         
     return string_cases
       
-def generate_condition(list_logic_operations, list_variables, list_condition_linkers):
+def _generate_condition(list_logic_operations, list_variables, list_condition_linkers):
     conditions = random.randint(1,2)
     string_condition = ""
     
@@ -334,7 +221,7 @@ def generate_condition(list_logic_operations, list_variables, list_condition_lin
         
     return string_condition
 
-def generate_operations(list_arit_monators, list_variables, list_kind_operations, 
+def _generate_operations(list_arit_monators, list_variables, list_kind_operations, 
                         list_arit_operations, list_parenthesis, list_logic_operations,
                         list_condition_linkers):
     operations = random.randint(1,5)
@@ -395,7 +282,7 @@ def generate_operations(list_arit_monators, list_variables, list_kind_operations
 
     return string_operation
 
-def generate_compound_operation(list_arit_operations, list_variables, list_parenthesis):
+def _generate_compound_operation(list_arit_operations, list_variables, list_parenthesis):
     operations                  = random.randint(1,3)
     string_compound_operation   = ""
     
@@ -439,107 +326,206 @@ def generate_compound_operation(list_arit_operations, list_variables, list_paren
     
     return string_compound_operation
 
-#### CARD MANAGEMENT ####
+def _calculate_coord(string_to_insert):
 
-def filter_deck(deck_folder, deck_name, init_high_text, max_high, max_length, increment_y_axis):
-    cards = utils.ls("{}/{}/".format(deck_folder, deck_name))
-    cards_to_remove = []
+    test_string = "IF"
+    test_coord = (290, 170)
+
+
+    caracteres_test = len(test_string)
+    caracteres      = len(string_to_insert)
     
-    for card in cards:
-        card_file = open("{}/{}/{}".format(deck_folder, deck_name, card), "r")
-        line = card_file.readline()
+    diff_letters    = caracteres - caracteres_test
+    
+    coord_x = test_coord[0] - diff_letters * 20
+    
+    return (coord_x, test_coord[1])
+
+def generate_card_TechDeck(card_dict):
+    algorithm           = random.choice(card_dict['list_kind_algorithm'])
+   
+    string_title        = ""
+    string_description  = ""
+    
+    if algorithm == 'if':
+        string_title += (algorithm)
+        string_description += _generate_if_struct(card_dict['list_logic_operations'],
+                                                 card_dict['list_variables'], 
+                                                 card_dict['list_condition_linkers'], 
+                                                 card_dict['list_arit_monators'],
+                                                 card_dict['list_kind_operations'], 
+                                                 card_dict['list_arit_operations'], 
+                                                 card_dict['list_parenthesis'])
         
-        total_height = init_high_text
+    
+    elif algorithm == 'else if':
+        string_title += ("if - " + algorithm)
         
-        while line:
-            splitted_line = line.split(" ")
+        string_description += _generate_if_else_if_struct(card_dict['list_logic_operations'],
+                                                         card_dict['list_variables'], 
+                                                         card_dict['list_condition_linkers'], 
+                                                         card_dict['list_arit_monators'],
+                                                         card_dict['list_kind_operations'], 
+                                                         card_dict['list_arit_operations'], 
+                                                         card_dict['list_parenthesis'])
+        
+    elif algorithm == 'else':
+        string_title += ("if - " + algorithm)
+        string_description += _generate_if_else_struct(card_dict['list_logic_operations'],
+                                                      card_dict['list_variables'],
+                                                      card_dict['list_condition_linkers'], 
+                                                      card_dict['list_arit_monators'],
+                                                      card_dict['list_kind_operations'], 
+                                                      card_dict['list_arit_operations'], 
+                                                      card_dict['list_parenthesis'])
+    elif algorithm == 'switch':
+        string_title += (algorithm)
+        string_description += _generate_switch_case_struct(card_dict['list_logic_operations'],
+                                                          card_dict['list_variables'], 
+                                                          card_dict['list_condition_linkers'], 
+                                                          card_dict['list_arit_monators'],
+                                                          card_dict['list_kind_operations'], 
+                                                          card_dict['list_arit_operations'], 
+                                                          card_dict['list_parenthesis'])
+        
+    
+    elif algorithm == 'None':
+        string_title += ("Operation")
+        string_description += "{}".format(_generate_operations(card_dict['list_arit_monators'], 
+                                                              card_dict['list_variables'], 
+                                                              card_dict['list_kind_operations'], 
+                                                              card_dict['list_arit_operations'], 
+                                                              card_dict['list_parenthesis'],
+                                                              card_dict['list_logic_operations'],
+                                                              card_dict['list_condition_linkers']))
+
+    return string_title, string_description
+
+def create_deck_TechDeck(deck_name, n_cards, test_coord_desc=(80, 340), init_offset_x=0, init_offset_y=20):
+    
+    os.system('mkdir {}/{}'.format(routes.deck_folder, deck_name))
+
+    base_card = TechDeck_Card()
+    
+    for i in range(n_cards):
+        file_card = open("{}/{}/card_{}.svg".format(routes.deck_folder, deck_name, i), "w")
+        
+        title, description = generate_card(TechDeck_Card_Elements)
+
+        title_coord = _calculate_coord(title)
+        desc_coord = test_coord_desc
+        
+        description_lines = description.split("\n")
+
+        text_to_write = ''
+        
+        text_to_write += '\t<text x="{}" y="{}" class="st1"> {} </text>\n'.format(title_coord[0], title_coord[1],
+                                                                            title)
+        text_to_write += '\t<text x="{}" y="{}" class="st2"> {} \n'.format(desc_coord[0], desc_coord[1],
+                                                                       description_lines[0])
+        offset_x = init_offset_x
+        offset_y = init_offset_y
+
+        if len(description_lines) > 2:
+    
+            for line in description_lines[1:]:
             
-            if 'class="st2">' in splitted_line:
-                aux = line.split('>')[1].split('<')
-                aux = aux[0].replace("&gt;", ">").replace("&lt;", "<").replace("&amp;", "&").replace("\n", "")
-                total_height += increment_y_axis
+                if ('{' in list(description_lines[description_lines.index(line) - 1])) or (len(description_lines[description_lines.index(line) - 1].split("SEMICOLON")) > 1):
+                    offset_x += base_card.width_increment
+                elif ('}' in list(line)):
+                    offset_x -= base_card.width_increment
+            
                 
-                if len(aux) > max_length and card not in cards_to_remove:                    
-                    cards_to_remove.append(card)
-                    break
+                text_to_write += '\t\t<tspan x="{}" y="{}" class="st2"> {} </tspan>\n'.format(desc_coord[0]+offset_x, 
+                                                                               desc_coord[1]+offset_y,
+                                                                               line.replace('SEMICOLON', ':'))
+                if ('break;' in line.split(" ")):
+                    offset_x -= base_card.width_increment
+                
+                offset_y += base_card.height_increment
+
+        text_to_write += "\t</text>\n"
+
+        svg_base = base_card.return_card_svg()
+
+        file_card.write(svg_base.format(text_to_write))
+        file_card.close()    
+
+# Against humanity custom deck generation
+def _recreate_phrase(list_words):
+    string_phrase = ""
+    for word in list_words:
+        string_phrase += word
+        string_phrase += ' '
+    
+    return string_phrase
+
+def _read_cards_csv(route_csv):
+
+    aux = Galfgets.galfgets.read_dataset(route_csv)
+    black = list(aux['Cartas negras'].dropna())
+    white = list(aux['Cartas blancas '].dropna())
+    
+
+    return black, white
+
+def create_deck_Against(deck_name, kind_card,
+                csv_route, desc_coord=(52, 45),
+                init_offset_x=0, init_offset_y=40):
+    
+    os.system('mkdir {}/{}'.format(routes.deck_folder, deck_name))
+
+    if (kind_card == 'white'):
+
+        _, cards = _read_cards_csv(csv_route)
+        card_base = Against_Card()
+
+    else:
+        cards, _ = _read_cards_csv(csv_route)
+        card_base = Against_Card(font_color=[255,255,255], container_color_text=[0,0,0])
+
+    for i in cards:
+        file_card = open("{}/{}/card_{}.svg".format(routes.deck_folder, deck_name, cards.index(i)), "w")
+        
+        lenght_text = len(i)
+        words_aux = i.split(' ')
+        
+        if (lenght_text >= 12):
+            
+            words       = i.split(' ')
+            characters  = 0
+            for word in words:
+                if (word == '<'):
+                    words[words.index(word)] = 'lt&'
                     
-                elif total_height > max_high and card not in cards_to_remove:
-                    cards_to_remove.append(card)
-                    break
-                
-            line = card_file.readline()
-        
-        card_file.close()
-        
-    return cards_to_remove               
+                characters += len(word)
+                characters += 1
+                if characters >= 12:
+                    words_aux[words_aux.index(word)] = "{}\n".format(word)
+                    characters = 0
+                    
+        description = _recreate_phrase(words_aux)
+        description_lines = description.split('\n')
 
-def remove_list_of_cards(list_of_cards, deck_folder, deck_name):
-    
-    for card in list_of_cards:
-        os.system('rm {}/{}/{}'.format(deck_folder, deck_name, card))
-        utils.printProgressBar(list_of_cards.index(card), len(list_of_cards))
+        text_to_write = ''
+        
+        text_to_write +='\t<text x="{}" y="{}" class="st1"> {} \n'.format(desc_coord[0], desc_coord[1],
+                                                                        description_lines[0])
+        offset_x = init_offset_x
+        offset_y = init_offset_y
 
-def generate_card_to_print(output_route, input_route, card_width, card_height, list_of_cards, end_svg_file):
-    number_of_cards = len(list_of_cards)
-    number_of_folds = int(number_of_cards / 9) + 1
-    index = 0
+        if len(description_lines) > 2:
     
-    for fold in range(number_of_folds):
-        file_to_print = open("{}/fold_to_print_{}.svg".format(output_route, fold), "w")
-        string_cards = ""
-        
-        card_offset_x   = 30
-        card_offset_y  = 50
-        
-        cards_to_add = list_of_cards[index:index+9]
-        
-        for card in cards_to_add:
-            card_route = "{}/{}".format(input_route, card)
+            for line in description_lines[1:]:
             
-            if cards_to_add.index(card) % 3 == 0 and cards_to_add.index(card) != 0:
-                card_offset_y += card_height + 50
-                card_offset_x = 30
+                text_to_write += '\t\t<tspan x="{}" y="{}" class="st1"> {} </tspan>\n'.format(desc_coord[0]+offset_x, 
+                                                                               desc_coord[1]+offset_y,
+                                                                               line.replace('SEMICOLON', ':'))
+                offset_y += card_base.height_increment
 
-                
-            string_cards += '<image x="{}" y="{}" width="{}" height="{}" xlink:href="{}" />\n'.format(card_offset_x, card_offset_y,
-                                                                                                      card_width, card_height, 
-                                                                                                      card_route)
-            card_offset_x += card_width + 30
+        text_to_write += ("\t</text>\n")
 
-            
-            
-        file_to_print.write('<svg width="2100" height="2970">\n {}\n{}\n'.format(string_cards, end_svg_file))
-        
-        index += 9
-        file_to_print.close()
-        
-def converse_to_pdf(route_input_folds, route_output_folds):
-    
-    list_of_folds = utils.ls(route_input_folds)
-    
-    for fold in list_of_folds:
-        os.system("rsvg-convert -f pdf -o {}/{}.pdf {}/{}".format(route_output_folds, fold[:len(fold)-4], route_input_folds, fold))
+        svg_base = card_base.return_card_svg()
 
-if __name__ == '__main__':
-    # create_deck("Variables_Operaciones", 1000, bc.base_card, 
-    #             bc.test_title, bc.test_desc,
-    #             bc.base_card_end, bc.list_kind_algorithm, bc.list_logic_operations,
-    #             bc.list_variables, bc.list_condition_linkers, bc.list_arit_monators,
-    #             bc.list_kind_operations, bc.list_arit_operations, bc.list_parenthesis,
-    #             bc.test_coord_title, bc.test_coord_desc)
-    
-    # list_of_cards = filter_deck(routes.deck_folder, "Variables_Operaciones", bc.init_high_text, 
-    #                             bc.max_high_text, bc.max_lenght_text, bc.increment_y_axis)
-    
-    # remove_list_of_cards(list_of_cards, routes.deck_folder, "Variables_Operaciones")
-    # generate_card_to_print("Decks/to_print", "Variables_Operaciones", bc.card_size[0],
-    #                        bc.card_size[1], utils.ls("Decks/Variables_Operaciones/"), bc.base_card_end)
-    
-    converse_to_pdf("Decks/to_print", "Decks/to_print_pdf")
-    
-    
-    
-    
-    
-    
-    
+        file_card.write(svg_base.format(text_to_write))
+        file_card.close()
