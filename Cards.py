@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from dataclasses import dataclass, field
+from dataclasses    import dataclass, field
+from enum           import Enum
 
 @dataclass(init=True, repr=True)
 class Card:
@@ -15,7 +16,7 @@ class Card:
 
 @dataclass(init=True, repr=True)
 class TechDeck_Card(Card):
-    text_to_write: str
+    text_to_write: str = field(default='', init=True)
 
     card_kind: str = field(default='TechDeck_Card', init=True)
 
@@ -71,21 +72,13 @@ class TechDeck_Card(Card):
         definitions_block = self.generate_def_block()
         containers_block = self.generate_cont_block()
         
-        return base_card.format('{} \n {}'.format(definitions_block, containers_block))
+        return base_card.format('{} \n {}'.format(definitions_block, containers_block)).format(self.text_to_write)
 
-TechDeck_Card_Elements = {  'list_kind_algorithm': ['if', 'else', 'else if', 'switch', 'None'],
-                            'list_kind_operations': ['Monovalue operation', 'Multivalue operation', 'Logic operation'],
-                            'list_arit_operations': ['+', '-', '/', '%', '*'],
-                            'list_arit_monators': ['+=', '-=', '*=', '/=', '='],
-                            'list_logic_operations': ['&lt;', '&gt;', '&lt;=', '&gt;=', '==', '!='],
-                            'list_condition_linkers':['&amp;&amp;', '||'],
-                            'list_parenthesis': ['()', 'Nope'],
-                            'list_variables': ['victory', 'position', 'None']
-                        }
+
 
 @dataclass(init=True, repr=True)
 class Against_Card(Card):
-    text_to_write: str
+    text_to_write: str = field(default='', init=True)
 
     card_kind: str = field(default='Against_Card', init=True)
 
@@ -156,6 +149,19 @@ class Against_Card(Card):
 
         return base_card.format('{}\n{}\n{}'.format(definitions_block, 
                                                     containers_block, 
-                                                    logo_container))
+                                                    logo_container)).format(self.text_to_write)
 
 
+class CardElements(Enum):
+    TechDeck = {'list_kind_algorithm': ['if', 'else', 'else if', 'switch', 'None'],
+                'list_kind_operations': ['Monovalue operation', 'Multivalue operation', 'Logic operation'],
+                'list_arit_operations': ['+', '-', '/', '%', '*'],
+                'list_arit_monators': ['+=', '-=', '*=', '/=', '='],
+                'list_logic_operations': ['&lt;', '&gt;', '&lt;=', '&gt;=', '==', '!='],
+                'list_condition_linkers':['&amp;&amp;', '||'],
+                'list_parenthesis': ['()', 'Nope'],
+                'list_variables': ['victory', 'position', 'None']
+    }
+
+    Against = {'route_csv_file':'resources/against_cards.csv'
+    }
