@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from dataclasses    import dataclass, field
-from enum           import Enum
+from enum import Enum
+from dataclasses import dataclass, field
 
 @dataclass(init=True, repr=True)
 class Card:
     card_kind: str
-   
+
     card_height: int
     card_width: int
-    
+
     def base_card(self):
-        return '<svg width="{}" height="{}">\n {}\n {}\n</svg>'.format(self.card_width, self.card_height)
+        base_string = '<svg width="{}" height="{}">\n {}\n {}\n</svg>'
+        return base_string.format(self.card_width, self.card_height)
 
 @dataclass(init=True, repr=True)
 class TechDeck_Card(Card):
@@ -20,36 +21,40 @@ class TechDeck_Card(Card):
 
     card_kind: str = field(default='TechDeck_Card', init=True)
 
-    font_style_title: str = field(default='Pixelmix', init=True)
-    font_size_title: str = field(default=60, init=True)
+    fsty_title: str = field(default='Pixelmix', init=True)
+    fsiz_title: str = field(default=60, init=True)
 
-    font_style_algorithm: str = field(default='Pixelmix', init=True)
-    font_size_algorithm: str = field(default=20, init=True)
+    fsty_algorithm: str = field(default='Pixelmix', init=True)
+    fsiz_algorithm: str = field(default=20, init=True)
 
-    max_text_height: int = field(default=795, init=True)
-    max_text_length: int = field(default=36, init=True)
+    mxt_height: int = field(default=795, init=True)
+    mxt_length: int = field(default=36, init=True)
 
     card_height: int = field(default=899, init=True)
     card_width: int = field(default=659, init=True)
 
-    height_increment: int = field(default=20, init=True)
-    width_increment: int = field(default=30, init=True)
-  
-    container_color_card: list = field(default=[192, 192, 192], init=True)
-    container_color_text: list = field(default=[0, 0, 0, 0.5], init=True)
+    height_inc: int = field(default=20, init=True)
+    width_inc: int = field(default=30, init=True)
+
+    con_color_card: list = field(default=[192, 192, 192], init=True)
+    con_color_text: list = field(default=[0, 0, 0, 0.5], init=True)
 
     def generate_style_text(self):
-        style_font_title = "\t\t\t.st1{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb(0,0,0);\n\t\t\t}".format(self.font_style_title, self.font_size_title) 
-        style_font_algorithm = "\t\t\t.st2{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb(0,0,0);\n\t\t\t}".format(self.font_style_algorithm, self.font_size_algorithm) 
+        stlf_title = "\t\t\t.st1{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb(0,0,0);\n\t\t\t}"
+        stlf_title = stlf_title.format( self.fsty_title, 
+                                        self.fsiz_title) 
 
-        return '\t\t<style type="text/css">\n {}\n\n {} \n\t\t</style>'.format(style_font_title, style_font_algorithm)
+        stlf_algorithm = "\t\t\t.st2{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb(0,0,0);\n\t\t\t}"
+        stlf_algorithm = stlf_algorithm.format(self.fsty_algorithm, self.fsiz_algorithm) 
+
+        return '\t\t<style type="text/css">\n {}\n\n {} \n\t\t</style>'.format(stlf_title, stlf_algorithm)
 
     def generate_style_cont(self):
-        style_card_container    = "\t\t\t#cardContainer{\n\t\t\t\tfill:rgb({}, {}, {});\n\t\t\t\tstroke:black;\n\t\t\t\tstroke-width:30;\n\t\t\t}".format(self.container_color_card[0],
-                self.container_color_card[1], self.container_color_card[2])
+        style_card_container    = "\t\t\t#cardContainer{\n\t\t\t\tfill:rgb({}, {}, {});\n\t\t\t\tstroke:black;\n\t\t\t\tstroke-width:30;\n\t\t\t}".format(self.con_color_card[0],
+                self.con_color_card[1], self.con_color_card[2])
 
-        style_text_container    = "\t\t\t#textContainer{\n\t\t\t\tfill:rgb({}, {}, {});\n\t\t\t\topacity:{};\n\t\t\t}".format(self.container_color_text[0],
-                self.container_color_text[1], self.container_color_text[2], self.container_color_text[3])
+        style_text_container    = "\t\t\t#textContainer{\n\t\t\t\tfill:rgb({}, {}, {});\n\t\t\t\topacity:{};\n\t\t\t}".format(self.con_color_text[0],
+                self.con_color_text[1], self.con_color_text[2], self.con_color_text[3])
 
         return '\t\t<style>\n {}\n\n {} \n\t\t</style>'.format(style_card_container, style_text_container)
 
@@ -83,21 +88,21 @@ class Against_Card(Card):
     card_kind: str = field(default='Against_Card', init=True)
 
     font_color: list = field(default=[0,0,0], init=True)
-    font_style_title: str = field(default='IBM Plex Mono', init=True)
-    font_size_title: str = field(default=30, init=True)
+    fsty_title: str = field(default='IBM Plex Mono', init=True)
+    fsiz_title: str = field(default=30, init=True)
 
     font_style_text: str = field(default='IBM Plex Mono', init=True)
     font_size_text: str = field(default=20, init=True)
 
-    max_text_height: int = field(default=795, init=True)
-    max_text_length: int = field(default=36, init=True)
+    mxt_height: int = field(default=795, init=True)
+    mxt_length: int = field(default=36, init=True)
         
     card_size: int = field(default=481, init=True)
 
-    height_increment: int = field(default=20, init=True)
-    width_increment: int = field(default=30, init=True)
+    height_inc: int = field(default=20, init=True)
+    width_inc: int = field(default=30, init=True)
   
-    container_color_text: list = field(default=[255, 255, 255, 0], init=True)
+    con_color_text: list = field(default=[255, 255, 255, 0], init=True)
 
     logo_route: str = field(default='{}/logo.png'.format('./graphics/logo/monito_logo.PNG'), init=True)
     logo_height: int = field(default=50, init=True)
@@ -114,16 +119,16 @@ class Against_Card(Card):
         object.__setattr__(self, 'card_width', self.card_size )
 
     def generate_style_text(self):
-        style_font_title = "\t\t\t.st1{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb({},{},{});\n\t\t\t}".format(self.font_style_title, self.font_size_title,
+        style_font_title = "\t\t\t.st1{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb({},{},{});\n\t\t\t}".format(self.fsty_title, self.fsiz_title,
             self.font_color[0], self.font_color[1],self.font_color[2]) 
-        style_font_text = "\t\t\t.st2{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb({},{},{});\n\t\t\t}".format(self.font_style_algorithm, self.font_size_text,
+        style_font_text = "\t\t\t.st2{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb({},{},{});\n\t\t\t}".format(self.fsty_algorithm, self.font_size_text,
             self.font_color[0], self.font_color[1],self.font_color[2]) 
 
         return '\t\t<style type="text/css">\n {}\n\n {} \n\t\t</style>'.format(style_font_title, style_font_text)
 
     def generate_style_cont(self):
-        style_text_container    = "\t\t\t#textContainer{\n\t\t\t\tfill:rgb({}, {}, {});\n\t\t\t\topacity:{};\n\t\t\t}".format(self.container_color_text[0],
-                self.container_color_text[1], self.container_color_text[2], self.container_color_text[3])
+        style_text_container    = "\t\t\t#textContainer{\n\t\t\t\tfill:rgb({}, {}, {});\n\t\t\t\topacity:{};\n\t\t\t}".format(self.con_color_text[0],
+                self.con_color_text[1], self.con_color_text[2], self.con_color_text[3])
 
         return '\t\t<style>\n {}\n\t\t</style>'.format(style_text_container)
 
