@@ -42,7 +42,7 @@ class TechDeck_Card(Card):
     def generate_style_text(self):
         stlf_title = "\t\t\t.st1{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb(0,0,0);\n\t\t\t}"
         stlf_title = stlf_title.format( self.fsty_title, 
-                                        self.fsiz_title) 
+                                        self.fsiz_title)  
 
         stlf_algorithm = "\t\t\t.st2{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb(0,0,0);\n\t\t\t}"
         stlf_algorithm = stlf_algorithm.format(self.fsty_algorithm, self.fsiz_algorithm) 
