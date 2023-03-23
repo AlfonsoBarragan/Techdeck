@@ -4,7 +4,7 @@
 from enum import Enum
 from dataclasses import dataclass, field
 
-@dataclass(init=True, repr=True)
+@dataclass(init=True, repr=True) ###
 class Card:
     card_kind: str
 
@@ -15,7 +15,7 @@ class Card:
         base_string = '<svg width="{}" height="{}">\n {}\n {}\n</svg>'
         return base_string.format(self.card_width, self.card_height)
 
-@dataclass(init=True, repr=True)
+@dataclass(init=True, repr=True) ###
 class TechDeck_Card(Card):
     text_to_write: str = field(default='', init=True)
 
@@ -39,10 +39,13 @@ class TechDeck_Card(Card):
     con_color_card: list = field(default=[192, 192, 192], init=True)
     con_color_text: list = field(default=[0, 0, 0, 0.5], init=True)
 
+    style_spa: str = field(default="\n\t\t\t\t", init=True)
+
     def generate_style_text(self):
-        stlf_title = "\t\t\t.st1{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb(0,0,0);\n\t\t\t}"
+        stlf_title = "\t\t\t.st1{\tfont-family:'{0}';{2}font-size:{1}px;{2}fill:rgb(0,0,0);{2}}"
         stlf_title = stlf_title.format( self.fsty_title, 
-                                        self.fsiz_title)  
+                                        self.fsiz_title,
+                                        self.style_spa)  
 
         stlf_algorithm = "\t\t\t.st2{\tfont-family:'{}';\n\t\t\t\tfont-size:{}px;\n\t\t\t\tfill:rgb(0,0,0);\n\t\t\t}"
         stlf_algorithm = stlf_algorithm.format(self.fsty_algorithm, self.fsiz_algorithm) 
